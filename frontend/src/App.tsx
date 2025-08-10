@@ -1,37 +1,102 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-import NotFound from "./pages/NotFound";
-import AppLayout from "./components/layout/AppLayout";
-import Clients from "./pages/Clients";
-import Projects from "./pages/Projects";
-
-const queryClient = new QueryClient();
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
+import { ToastProvider } from './context/ToastContext'
+import { Layout } from './components/layout/Layout'
+import { ToastContainer } from './components/ui/ToastContainer'
+import { AuthPage } from './pages/AuthPage'
+import { Dashboard } from './pages/Dashboard'
+import { HomePage } from './pages/HomePage'
 
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
-          <Route path="/clients" element={<AppLayout><Clients /></AppLayout>} />
-          <Route path="/projects" element={<AppLayout><Projects /></AppLayout>} />
-          <Route path="/invoices" element={<AppLayout><div className='p-8 text-center'><h1 className='text-2xl font-bold text-foreground'>Invoices</h1><p className='text-muted-foreground'>Coming soon ...</p></div></AppLayout>} />
-          <Route path="/notes" element={<AppLayout><div className='p-8 text-center'><h1 className='text-2xl font-bold text-foreground'>Notes</h1><p className='text-muted-foreground'>Coming soon ...</p></div></AppLayout>} />
-          <Route path="/settings" element={<AppLayout><div className='p-8 text-center'><h1 className='text-2xl font-bold text-foreground'>Settings</h1><p className='text-muted-foreground'>Coming soon ...</p></div></AppLayout>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-)
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 dark:border-slate-100">
+        </div>
+      </div>
+    )
+  }
+  if (!user) {
+    return <Navigate to="/auth" replace />
+  }
+  return <Layout>{children}</Layout>
+}
+
+const AppRoutes: React.FC = () => {
+  const { user } = useAuth()
+
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
+      <Route path="/dashboard" element={<ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
+      }
+      />
+      <Route path="/clients" element={
+        <ProtectedRoute>
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Clients Module</h2>
+            <p className="text-slate-600 dark:text-slate-400">Client management features coming soon...</p>
+          </div>
+        </ProtectedRoute>
+      }
+      />
+      <Route path="/projects"
+      element={
+        <ProtectedRoute>
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Projects Module</h2>
+            <p className="text-slate-600 dark:text-slate-400">Project management features coming soon...</p>
+          </div>
+        </ProtectedRoute>
+      }
+      />
+      <Route path="/invoices"
+      element={
+        <ProtectedRoute>
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Invoices Module</h2>
+            <p className="text-slate-600 dark:text-slate-400">Project management features coming soon...</p>
+          </div>
+        </ProtectedRoute>
+      }
+      />
+      <Route path="/notes"
+      element={
+        <ProtectedRoute>
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Notes Module</h2>
+            <p className="text-slate-600 dark:text-slate-400">Project management features coming soon...</p>
+          </div>
+        </ProtectedRoute>
+      }
+      />
+    </Routes>
+  )
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <Router>
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
+              <AppRoutes />
+              <ToastContainer />
+            </div>
+          </Router>
+        </ToastProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  )
+}
 
 export default App
