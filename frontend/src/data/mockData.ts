@@ -1,4 +1,4 @@
-import { Client, Project, Task, Invoice, Note } from '../types'
+import type { Client, Project, Task, Invoice, Note } from '../types'
 
 export const mockClients: Client[] = [
     {
@@ -40,7 +40,7 @@ export const mockProjects: Project[] = [
         description: 'Complete redesign of company website',
         clientId: '1',
         status: 'active',
-        crearedAt: '15-01-2024',
+        createdAt: '15-01-2024',
         updatedAt: '20-01-2024'
     },
     {
@@ -49,7 +49,7 @@ export const mockProjects: Project[] = [
         description: 'Native iOS and Android app',
         clientId: '2',
         status: 'active',
-        crearedAt: '10-01-2024',
+        createdAt: '10-01-2024',
         updatedAt: '18-01-2024'
     },
     {
@@ -58,7 +58,7 @@ export const mockProjects: Project[] = [
         description: 'Logo and brand guideline creation',
         clientId: '3',
         status: 'completed',
-        crearedAt: '05-01-2024',
+        createdAt: '05-01-2024',
         updatedAt: '15-01-2024'
     },
 ]
@@ -68,12 +68,12 @@ export const mockTasks: Task[] = [
         id: '1',
         title: 'Create wireframes',
         description: 'Design wireframes for main pages',
-        status: 'completed',
+        status: 'done',
         priority: 'high',
         projectId: '1',
         clientId: '1',
         dueDate: '02-01-2024',
-        crearedAt: '05-01-2024',
+        createdAt: '05-01-2024',
         updatedAt: '15-01-2024'
     },
     {
@@ -85,7 +85,7 @@ export const mockTasks: Task[] = [
         projectId: '1',
         clientId: '1',
         dueDate: '05-02-2024',
-        crearedAt: '16-01-2024',
+        createdAt: '16-01-2024',
         updatedAt: '21-01-2024'
     },
     {
@@ -97,7 +97,7 @@ export const mockTasks: Task[] = [
         projectId: '2',
         clientId: '2',
         dueDate: '10-02-2024',
-        crearedAt: '17-01-2024',
+        createdAt: '17-01-2024',
         updatedAt: '17-01-2024'
     },
     {
@@ -109,7 +109,7 @@ export const mockTasks: Task[] = [
         projectId: '2',
         clientId: '2',
         dueDate: '15-02-2024',
-        crearedAt: '18-01-2024',
+        createdAt: '18-01-2024',
         updatedAt: '18-01-2024'
     },
 ]
@@ -122,7 +122,7 @@ export const mockInvoices: Invoice[] = [
         description: 'Website redesign - Phase 1',
         status: 'paid',
         dueDate: '01-02-2024',
-        crearedAt: '15-01-2024',
+        createdAt: '15-01-2024',
         updatedAt: '20-01-2024'
     },
     {
@@ -132,7 +132,7 @@ export const mockInvoices: Invoice[] = [
         description: 'Mobile app development - Milestone 1',
         status: 'sent',
         dueDate: '15-02-2024',
-        crearedAt: '20-01-2024',
+        createdAt: '20-01-2024',
         updatedAt: '20-01-2024'
     },
     {
@@ -142,7 +142,7 @@ export const mockInvoices: Invoice[] = [
         description: 'Website redesign - Phase 2',
         status: 'overdue',
         dueDate: '25-01-2024',
-        crearedAt: '10-01-2024',
+        createdAt: '10-01-2024',
         updatedAt: '10-01-2024'
     },
     {
@@ -152,7 +152,7 @@ export const mockInvoices: Invoice[] = [
         description: 'Brand identity package',
         status: 'draft',
         dueDate: '20-02-2024',
-        crearedAt: '22-01-2024',
+        createdAt: '22-01-2024',
         updatedAt: '22-01-2024'
     }
 ]
@@ -164,6 +164,7 @@ export const mockNotes: Note[] = [
         content: 'Initial project kickoff meeting. Discussed timeline and requirements.',
         type: 'meeting',
         createdAt: '15-01-2024T10:00:00Z',
+        updatedAt: '10-01-2024',
         createdBy: '1'
     },
     {
@@ -172,6 +173,7 @@ export const mockNotes: Note[] = [
         content: 'Client approved wireframes with minor revisions to the navigation.',
         type: 'email',
         createdAt: '18-01-2024T14:30:00Z',
+        updatedAt: '10-01-2024',
         createdBy: '1'
     },
     {
@@ -180,6 +182,7 @@ export const mockNotes: Note[] = [
         content: 'Follow-up call scheduled for next week to review app prototypes.',
         type: 'call',
         createdAt: '20-01-2024T09:15:00Z',
+        updatedAt: '10-01-2024',
         createdBy: '1'
     },
     {
@@ -188,6 +191,7 @@ export const mockNotes: Note[] = [
         content: 'Client mentioned they want to add social login features.',
         type: 'note',
         createdAt: '21-01-2024T16:45:00Z',
+        updatedAt: '10-01-2024',
         createdBy: '1'
     },
 ]

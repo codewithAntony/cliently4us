@@ -3,7 +3,7 @@ import { Eye, EyeOff } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { useAuth } from '../../context/AuthContext'
-import { useToast } from '@/context/ToastContext'
+import { useToast } from '../../context/ToastContext'
 
 interface LoginFormProps {
     onSwitchToRegister: () => void

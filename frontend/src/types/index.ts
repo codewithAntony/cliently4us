@@ -60,6 +60,7 @@ export interface Note {
     type: 'note' | 'call' | 'meeting' | 'email'
     createdAt: string
     updatedAt: string
+    createdBy: string
 }
 
 export interface AuthContextType {

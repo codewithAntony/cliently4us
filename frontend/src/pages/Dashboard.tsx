@@ -17,7 +17,7 @@ const StatCard: React.FC<{
   icon: React.ComponentType<any>
   trend?: string
   color?: string
-}> = ({ title, value, icon: isSecureContext, trend, color = 'slate' }) => {
+}> = ({ title, value, icon: Icon, trend, color = 'slate' }) => {
   const colorClasses = {
     slate: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400',
     blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400',
@@ -111,7 +111,7 @@ Dashboard
                   <div className="flex items-center">
                     <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
                       <span className="text-slate-600 dark:text-slate-400 font-medium">
-{client.name.split(' ').map(n =>[0]).join('')}
+{client.name.split(' ').map(n => n[0]).join('')}
                       </span>
                     </div>
                     <div className="ml-3">
