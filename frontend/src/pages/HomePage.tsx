@@ -47,9 +47,9 @@ return (
         <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">CT</span>
+            <span className="text-white font-bold text-sm">CS</span>
             </div>
-            <span className="ml-3 text-xl font-bold text-white">ClientTrack Pro</span>
+            <span className="ml-3 text-xl font-bold text-white">ClientSight</span>
         </div>
         
         <div className="hidden md:flex items-center space-x-8">
@@ -97,7 +97,7 @@ return (
             
             <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed">
             The lightweight CRM that helps freelancers and agencies manage clients, 
-            track projects, handle invoices, and streamline communication—all in one place.
+            track projects, handle invoices, and streamline communication-all in one place.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -120,7 +120,7 @@ return (
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
-            <StatCard number="10k+" label="Active Users" />
+            <StatCard number="1k+" label="Active Users" />
             <StatCard number="99.9%" label="Uptime" />
             <StatCard number="50+" label="Integrations" />
             <StatCard number="24/7" label="Support" />
@@ -196,7 +196,7 @@ return (
             Trusted by teams worldwide
             </h2>
             <p className="text-xl text-slate-300">
-            Join thousands of freelancers and agencies who trust ClientTrack Pro
+            Join thousands of freelancers and agencies who trust ClientSight
             </p>
         </div>
 
@@ -214,7 +214,7 @@ return (
                 </div>
             </div>
             <p className="text-slate-300 leading-relaxed">
-                "ClientTrack Pro transformed how I manage my freelance business. 
+                "ClientSight transformed how I manage my freelance business. 
                 The invoice tracking alone has saved me hours every week."
             </p>
             </div>
@@ -266,7 +266,7 @@ return (
             Ready to streamline your client management?
             </h2>
             <p className="text-xl text-slate-300 mb-8">
-            Join thousands of professionals who trust ClientTrack Pro to grow their business
+            Join thousands of professionals who trust ClientSight to grow their business
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -293,9 +293,9 @@ return (
         <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="flex items-center mb-4 md:mb-0">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">CT</span>
+                <span className="text-white font-bold text-sm">CS</span>
             </div>
-            <span className="ml-3 text-lg font-bold text-white">ClientTrack Pro</span>
+            <span className="ml-3 text-lg font-bold text-white">ClientSight</span>
             </div>
             
             <div className="flex items-center space-x-6 text-slate-300 text-sm">
@@ -306,7 +306,7 @@ return (
         </div>
         
         <div className="mt-8 pt-8 border-t border-white/10 text-center text-slate-400 text-sm">
-            © 2024 ClientTrack Pro. All rights reserved.
+        © {new Date().getFullYear()} ClientSight. All rights reserved.
         </div>
         </div>
     </footer>
