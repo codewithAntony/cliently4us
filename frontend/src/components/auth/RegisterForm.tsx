@@ -1,74 +1,69 @@
-import React, { useState } from 'react'
+import React, { useState, type SyntheticEvent } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { Button } from '../ui/Button'
+import { Button } from '../ui/button'
 import { Input } from '../ui/Input'
 import { useToast } from '../../context/ToastContext'
-import { useAuth } from '../../context/AuthContext'
 
 interface RegisterFormProps {
     onSwitchToLogin: () => void
 }
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-    })
 
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
-    const [errors, setErrors] = useState<Record<string, string>>({})
+    const [loading, setLoading] = useState(false)
 
-    const { register, loading } = useAuth()
     const { addToast } = useToast()
 
-    const validateForm = () => {
-        const newErrors: Record<string, string> = {}
 
-        if (!formData.name) {
-            newErrors.name = 'Name is required'
-        }
-
-        if (!formData.email) {
-            newErrors.email = 'Email is required'
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email is invalid'
-        }
-
-        if (!formData.password) {
-            newErrors.password = 'Password is required'
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters'
-        }
-
-        if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Password do not match'
-        }
-
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
-    }
-
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault()
 
-        if (!validateForm()) return
+        if (!name || !email || !password || !confirmPassword) {
+            addToast("error", "Missing fields", "Please fill in all fields")
+            return
+        }
+        if (!/\S+@\S+\.\S+/.test(email)) {
+            addToast("error", "Invalid email", "Please enter a valid email.")
+            return
+        }
+        if (password.length < 6) {
+            addToast("error", "Weak password", "Password must be at least 6 characters.")
+            return
+        }
+        if (password != confirmPassword) {
+            addToast("error", "Password mismatch", "Passwords do not match.")
+            return
+        }
 
+        setLoading(true)
         try {
-            await register(formData.email, formData.password, formData.name)
-            addToast('success', 'Account created!', 'Welcome to ClientTrack Pro.')
+            const res = await fetch(`${import.meta.env.VITE_API_BASE ?? "http://localhost:8000"}/api/register`, {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password }),
+            })
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}))
+                throw new Error(data?.message || "Registration failed")
+            }
+                addToast("success", "Account created!", "Please sign in.")
+                onSwitchToLogin()
+            
         } catch (error) {
-            addToast('error', 'Registration failed', error instanceof Error ? error.message : 'Something went wrong')
+            addToast("error", "Registration failed", error instanceof Error ? error.message : "Something went wrong")
+
+        } finally {
+            setLoading(false)
         }
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }))
-    }
 
     return (
         <div className='w-full max-w-md'>
@@ -87,20 +82,24 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                     name='name'
                     type='text'
                     label='Full Name'
-                    value={formData.name}
-                    onChange={handleChange}
-                    error={errors.name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder='Enter your full name'
+                />
+
+                <Input
+                    name='email'
+                    type='email'
+                    label='Email'
+                    onChange={e => setEmail(e.target.value)}
                     placeholder='Enter your email'
                 />
 
                 <div className='relative'>
                     <Input
                         name='password'
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         label='Password'
-                        value={formData.password}
-                        onChange={handleChange}
-                        error={errors.password}
+                        onChange={e => setPassword(e.target.value)}
                         placeholder='Create a password'
                     />
                     <button
@@ -116,9 +115,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                     name='ConfirmPassword'
                     type='password'
                     label='Confirm Password'
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    error={errors.confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
                     placeholder='Confirm your password'
                 />
 

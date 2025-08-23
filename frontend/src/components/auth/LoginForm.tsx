@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { Button } from '../ui/Button'
+import { Button } from '../ui/button'
 import { Input } from '../ui/Input'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
+import { useNavigate } from 'react-router-dom'
 
 interface LoginFormProps {
     onSwitchToRegister: () => void
@@ -15,9 +16,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
     const [showPassword, setShowPassword] = useState(false)
     const [errors, setErrors] = useState<{ email?: String; password?: string }>
     ({})
+    const [loading, setLoading] = useState(false)
 
-    const { login, loading } = useAuth()
+
     const { addToast } = useToast()
+    const { login } = useAuth()
+    const navigate = useNavigate()
 
     const validateForm = () => {
       const newErrors: { email?: string; password?: string } = {}
@@ -43,11 +47,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
 
       if (!validateForm()) return
 
+      setLoading(true)
       try {
         await login(email, password)
         addToast('success', 'Welcome back!', 'You have successfully signed in.')
       } catch (error) {
         addToast('error', 'Login failed', error instanceof Error ? error.message : 'Invalid credentials')
+      } finally {
+        setLoading(false)
       }
     }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight, CheckCircle, Users, BarChart3, FileText, MessageSquare, Zap, Shield, Globe } from 'lucide-react';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 

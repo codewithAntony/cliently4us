@@ -30,7 +30,7 @@ return (
         <div className="flex items-center">
             <div className="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
             <span className="text-slate-600 dark:text-slate-400 text-sm font-medium">
-                {user?.name.charAt(0)}
+                {user?.name ? user.name.charAt(0) : "U"}
             </span>
             </div>
             <div className="ml-3">

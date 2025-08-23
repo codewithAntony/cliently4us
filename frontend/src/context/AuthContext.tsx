@@ -1,14 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
 import type { AuthContextType, User } from '@/types'
+import { api } from "@/lib/api"
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const useAuth = () => {
     const context = useContext(AuthContext)
-    if (context === undefined) {
-        throw new Error('useAuth must be used within an AuthProvider')
-    }
-    return context
+    if (!context) throw new Error('useAuth must be used within an AuthProvider')
+        return context
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -16,74 +15,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const token = localStorage.getItem('auth-token')
-        const userData = localStorage.getItem('user-data')
-
-        if (token && userData) {
+        (async () => {
             try {
-                setUser(JSON.parse(userData))
-            } catch (error) {
-                localStorage.removeItem('auth-token')
-                localStorage.removeItem('user-data')
+                const u = await api<User>("/api/user", { method: "GET"})
+                setUser(u)
+            } catch {
+                setUser(null)
+            } finally {
+                setLoading(false)
             }
-        }
-        setLoading(false)
+        })()
     }, [])
 
     const login = async (email: string, password: string) => {
-        setLoading(true)
-        try {
-            await new Promise(resolve => setTimeout(resolve, 1000))
-
-            if (email === 'demo@clienttrack.com' && password === 'password') {
-                const userData: User = {
-                    id: '1',
-                    email,
-                    name: 'Demo User',
-                    role: 'admin'
-                }
-
-                const token = 'mock-jwt-token'
-                localStorage.setItem('auth-token', token)
-                localStorage.setItem('user-data', JSON.stringify(userData))
-                setUser(userData)
-            } else {
-                throw new Error('Invalid credentials')
-            }
-        } catch (error) {
-            throw error
-        } finally {
-            setLoading(false)
-        }
+        await api("/api/login", {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+        })
+        const u = await api<User>("/api/user", { method: "GET" })
+        setUser(u)
     }
 
     const register = async (email: string, password: string, name: string) => {
-        setLoading(true)
-
-        try {
-            await new Promise(resolve => setTimeout(resolve, 1000))
-
-            const userData: User = {
-                id: Date.now().toString(),
-                email,
-                name,
-                role: 'user'
-            }
-
-            const token = 'mock-jwt-token'
-            localStorage.setItem('auth-token', token)
-            localStorage.setItem('user-data', JSON.stringify(userData))
-            setUser(userData)
-        } catch (error) {
-            throw error
-        } finally {
-            setLoading(false)
-        }
+        await api("/api/register", {
+            method: "POST",
+            body: JSON.stringify({ email, password, name }),
+        })
     }
 
-    const logout = () => {
-        localStorage.removeItem('auth-token')
-        localStorage.removeItem('user-data')
+    const logout = async () => {
+        await api("/api/logout", { method: "POST" })
         setUser(null)
     }
 

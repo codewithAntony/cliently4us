@@ -1,8 +1,8 @@
 export interface User {
-    id: string
+    id: string | number
     email: string
     name: string
-    role: 'admin' | 'user'
+    role?: string
     avatar?: string
 }
 
@@ -67,7 +67,7 @@ export interface AuthContextType {
     user: User | null
     login: (email: string, password: string) => Promise<void>
     register: (email: string, password: string, name: string) => Promise<void>
-    logout: () => void
+    logout: () => Promise<void>
     loading: boolean
 }
 
