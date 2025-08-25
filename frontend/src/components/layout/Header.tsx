@@ -3,7 +3,7 @@ import { Bell, Search } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const Header: React.FC = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
 
 return (
     <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
@@ -38,6 +38,7 @@ return (
             <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{user?.role}</p>
             </div>
         </div>
+        <button onClick={logout} className='px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 text-sm font-medium"'>logout</button>
         </div>
     </div>
     </header>

@@ -31,10 +31,12 @@ return (
         <div className="flex items-center px-6 py-4 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center">
             <div className="w-8 h-8 bg-slate-900 dark:bg-slate-100 rounded-lg flex items-center justify-center">
-            <span className="text-white dark:text-slate-900 font-bold text-sm">CT</span>
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">CS</span>
+            </div>
             </div>
             <span className="ml-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
-            ClientTrack Pro
+            ClientSight
             </span>
         </div>
         </div>
