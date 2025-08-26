@@ -28,10 +28,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [])
 
     const login = async (email: string, password: string) => {
-        await api("/api/login", {
+        const response = await api<{message: string; token: string }>("/api/login", {
             method: "POST",
             body: JSON.stringify({ email, password }),
         })
+
+        if (response.token) {
+            localStorage.setItem('authToken', response.token)
+        }
         const u = await api<User>("/api/user", { method: "GET" })
         setUser(u)
     }

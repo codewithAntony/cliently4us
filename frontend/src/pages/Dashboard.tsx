@@ -40,10 +40,6 @@ interface Summary {
   openTasks: number
 }
 
-
-
- 
-
 export const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState<Summary>({ activeClient: 0, unpaidInvoices: 0, openTasks: 0 })
   const [recentClients, setRecentClients] = useState<Client[]>([])

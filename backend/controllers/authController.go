@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/codewithAntony/cliently4us/database"
 	"github.com/codewithAntony/cliently4us/models"
+	"github.com/codewithAntony/cliently4us/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -77,33 +79,51 @@ func Login(c *fiber.Ctx) error {
 		Value:    token,
 		Expires:  time.Now().Add(24 * time.Hour),
 		HTTPOnly: true,
+		SameSite: "Lax",
 	}
 
 	c.Cookie(&cookie)
 
 	return c.JSON(fiber.Map{
 		"message": "success",
+		"token":   token,
 	})
 }
 
 func User(c *fiber.Ctx) error {
 	cookie := c.Cookies("jwt")
 
-	token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(SecretKey), nil
-	})
+	if cookie == "" {
+		authHeader := c.Get("Authorization")
+		if authHeader != "" {
+			parts := strings.Split(authHeader, " ")
+			if len(parts) == 2 && parts[0] == "Bearer" {
+				cookie = parts[1]
+			}
+		}
+	}
 
-	if err != nil {
+	if cookie == "" {
 		c.Status(fiber.StatusUnauthorized)
 		return c.JSON(fiber.Map{
 			"message": "unauthenticated",
 		})
 	}
 
+	token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(SecretKey), nil
+	})
+
+	if err != nil || token.Valid {
+		c.Status(fiber.StatusUnauthorized)
+		return c.JSON(fiber.Map{
+			"message": "ubauthenticated",
+		})
+	}
+
 	claims := token.Claims.(*jwt.RegisteredClaims)
 
 	var user models.User
-
 	database.DB.Where("id = ?", claims.Issuer).First(&user)
 
 	return c.JSON(user)
@@ -111,14 +131,39 @@ func User(c *fiber.Ctx) error {
 }
 
 func Logout(c *fiber.Ctx) error {
-	cookie := fiber.Cookie{
+	cookie := c.Cookies("jwt")
+
+	if cookie == "" {
+		authHeader := c.Get("Authorization")
+		if authHeader != "" {
+			parts := strings.Split(authHeader, " ")
+			if len(parts) == 2 && parts[0] == "Bearer" {
+				cookie = parts[1]
+			}
+		}
+	}
+
+	if cookie != "" {
+		token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+			return []byte(SecretKey), nil
+		})
+
+		if err == nil && token.Valid {
+			claims := token.Claims.(*jwt.RegisteredClaims)
+			expiry := claims.ExpiresAt.Time
+			utils.AddToBlacklist(cookie, expiry)
+		}
+	}
+
+	logoutCookie := fiber.Cookie{
 		Name:     "jwt",
 		Value:    "",
 		Expires:  time.Now().Add(-time.Hour),
 		HTTPOnly: true,
+		SameSite: "Lax",
 	}
 
-	c.Cookie(&cookie)
+	c.Cookie(&logoutCookie)
 
 	return c.JSON(fiber.Map{
 		"message": "success",

@@ -4,16 +4,48 @@ export async function api<T = any>(
     path: string,
     options: RequestInit = {}
 ): Promise<T> {
+    const token = localStorage.getItem('authToken')
+
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+    }
+
+    if (options.headers) {
+        if (options.headers instanceof Headers) {
+            options.headers.forEach((value, key) => {
+                headers[key] = value
+            }) 
+        } else if (Array.isArray(options.headers)) {
+            options.headers.forEach(([key, value]) => {
+                headers[key] = value
+            })
+        } else {
+            Object.entries(options.headers).forEach(([key, value]) => {
+                headers[key] = value as string
+            })
+        }
+    }
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
+
     const res = await fetch(`${API_BASE}${path}`, {
         credentials: "include",
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {}),
-        },
+        headers,
         ...options,
     })
 
     if (!res.ok) {
+        if (res.status === 401) {
+            localStorage.removeItem('authToken')
+
+            if (typeof window !== 'undefined') {
+                window.location.href = '/auth'
+            }
+            throw new Error("Authentication failed. Please login again.")
+        }
+        
         let msg = `Request failed (${res.status})`;
         try {
             const data = await res.json()
