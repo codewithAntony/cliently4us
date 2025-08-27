@@ -11,9 +11,9 @@ import { HomePage } from './pages/HomePage'
 
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, loading } = useAuth()
+  const { user, loading, checkedAuth } = useAuth()
 
-  if (loading) {
+  if (loading || !checkedAuth) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 dark:border-slate-100">
@@ -27,13 +27,30 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <Layout>{children}</Layout>
 }
 
+const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, loading, checkedAuth } = useAuth()
+
+  if (loading || !checkedAuth) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 dark:border-slate-100">
+        </div>
+      </div>
+    )
+  }
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />
+  }
+  return <>{children}</>
+}
+
 const AppRoutes: React.FC = () => {
-  const { user } = useAuth()
 
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
+      <Route path="/auth" element={<PublicRoute><AuthPage /></PublicRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute>
         <Dashboard />
       </ProtectedRoute>

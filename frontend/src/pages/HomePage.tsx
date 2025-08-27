@@ -29,7 +29,7 @@ const StatCard: React.FC<{
 );
 
 export const HomePage: React.FC = () => {
-    const { user } = useAuth();
+    const { user, checkedAuth } = useAuth();
     const navigate = useNavigate();
 
     const handleGetStarted = () => {
@@ -39,6 +39,10 @@ export const HomePage: React.FC = () => {
         navigate('/auth');
         }
     };
+
+    if (!checkedAuth) {
+        return null
+    }
 
 return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">

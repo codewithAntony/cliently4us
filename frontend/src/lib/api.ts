@@ -30,11 +30,14 @@ export async function api<T = any>(
         headers['Authorization'] = `Bearer ${token}`
     }
 
+    try {
     const res = await fetch(`${API_BASE}${path}`, {
         credentials: "include",
         headers,
         ...options,
     })
+
+    console.log(`API ${path} response:`, res.status)
 
     if (!res.ok) {
         if (res.status === 401) {
@@ -56,4 +59,8 @@ export async function api<T = any>(
 
     if (res.status === 204) return undefined as T
     return (await res.json()) as T
+} catch (error) {
+    console.error(`API call to ${path} failed:`, error)
+    throw error
+}
 }

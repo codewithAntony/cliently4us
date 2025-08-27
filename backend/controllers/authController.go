@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -92,18 +93,22 @@ func Login(c *fiber.Ctx) error {
 
 func User(c *fiber.Ctx) error {
 	cookie := c.Cookies("jwt")
+	fmt.Printf("Cookie from request: %s\n", cookie)
 
 	if cookie == "" {
 		authHeader := c.Get("Authorization")
+		fmt.Printf("Authorzation header: %s\n", authHeader)
 		if authHeader != "" {
 			parts := strings.Split(authHeader, " ")
 			if len(parts) == 2 && parts[0] == "Bearer" {
 				cookie = parts[1]
+				fmt.Printf("Extract token from header: %s\n", cookie)
 			}
 		}
 	}
 
 	if cookie == "" {
+		fmt.Println("No token found in request")
 		c.Status(fiber.StatusUnauthorized)
 		return c.JSON(fiber.Map{
 			"message": "unauthenticated",
@@ -114,18 +119,29 @@ func User(c *fiber.Ctx) error {
 		return []byte(SecretKey), nil
 	})
 
-	if err != nil || token.Valid {
+	if err != nil || !token.Valid {
+		fmt.Printf("Token parsing error: %v\n", err)
 		c.Status(fiber.StatusUnauthorized)
 		return c.JSON(fiber.Map{
-			"message": "ubauthenticated",
+			"message": "unauthenticated",
+		})
+	}
+
+	if !token.Valid {
+		fmt.Println("Token is invalid")
+		c.Status(fiber.StatusUnauthorized)
+		return c.JSON(fiber.Map{
+			"message": "unauthenticated",
 		})
 	}
 
 	claims := token.Claims.(*jwt.RegisteredClaims)
+	fmt.Printf("Token claims: %+v\n", claims)
 
 	var user models.User
 	database.DB.Where("id = ?", claims.Issuer).First(&user)
 
+	fmt.Printf("Found user: %+v\n", user)
 	return c.JSON(user)
 
 }

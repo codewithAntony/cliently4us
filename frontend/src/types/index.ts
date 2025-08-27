@@ -65,11 +65,13 @@ export interface Note {
 
 export interface AuthContextType {
     user: User | null
-    login: (email: string, password: string) => Promise<void>
+    login: (email: string, password: string) => Promise<User>
     register: (email: string, password: string, name: string) => Promise<void>
     logout: () => Promise<void>
     loading: boolean
+    checkedAuth: boolean
 }
+
 
 export interface ThemeContextType {
     theme: 'light' | 'dark'

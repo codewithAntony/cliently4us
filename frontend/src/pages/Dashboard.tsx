@@ -1,6 +1,8 @@
+// Dashboard.tsx
 "use client"
 
 import React, { useEffect, useState } from "react";
+import { useAuth } from '@/context/AuthContext';
 import {
   Users,
   CheckCircle,
@@ -10,6 +12,7 @@ import {
   Star
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { api } from '@/lib/api';
 
 interface Client {
   id: number
@@ -42,23 +45,41 @@ interface Summary {
 
 export const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState<Summary>({ activeClient: 0, unpaidInvoices: 0, openTasks: 0 })
-  const [recentClients, setRecentClients] = useState<Client[]>([])
-  const [urgentTasks, setUrgentTasks] = useState<Task[]>([])
-  const [unpaidInvoices, setUnpaidInvoices] = useState<Invoice[]>([])
+  const [recentClients, setRecentClients] = useState<Client[]>([]) // Initialize as empty array
+  const [urgentTasks, setUrgentTasks] = useState<Task[]>([]) // Initialize as empty array
+  const [unpaidInvoices, setUnpaidInvoices] = useState<Invoice[]>([]) // Initialize as empty array
+  const [loading, setLoading] = useState(true) // Add loading state
+  const { user } = useAuth()
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/dashboard", {
-      credentials: "include",
+    if (!user) return;
+
+    setLoading(true);
+    api<{
+      summary: Summary;
+      recentClients: Client[];
+      urgentTasks: Task[];
+      unpaidInvoices: Invoice[];
+    }>("/api/dashboard", {
+      method: "GET",
     })
-    .then((res) => res.json())
     .then((data) => {
-      setSummary(data.summary)
-      setRecentClients(data.recentClients)
-      setUrgentTasks(data.urgentTasks)
-      setUnpaidInvoices(data.unpaidInvoices)
+      setSummary(data.summary || { activeClient: 0, unpaidInvoices: 0, openTasks: 0 })
+      setRecentClients(data.recentClients || [])
+      setUrgentTasks(data.urgentTasks || [])
+      setUnpaidInvoices(data.unpaidInvoices || [])
     })
     .catch((err) => console.error("Dashboard fetch error:", err))
-  }, [])
+    .finally(() => setLoading(false))
+  }, [user])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 dark:border-slate-100"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -75,20 +96,24 @@ export const Dashboard: React.FC = () => {
           <CardTitle>Recent Clients</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-4">
-            {recentClients.map((client) => (
-              <li key={client.id} className="flex items-center space-x-3">
-                <Star className="h-5 w-5 text-yellow-500" />
-                <div>
-                  <p className="font-medium">{client.name}</p>
-                  <p className="text-sm text-muted-foreground">{client.company}</p>
-                </div>
-                <span className="ml-auto text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                  {client.status}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {recentClients.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">No clients found</p>
+          ) : (
+            <ul className="space-y-4">
+              {recentClients.map((client) => (
+                <li key={client.id} className="flex items-center space-x-3">
+                  <Star className="h-5 w-5 text-yellow-500" />
+                  <div>
+                    <p className="font-medium">{client.name}</p>
+                    <p className="text-sm text-muted-foreground">{client.company}</p>
+                  </div>
+                  <span className="ml-auto text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    {client.status}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
 
@@ -98,22 +123,26 @@ export const Dashboard: React.FC = () => {
           <CardTitle>Urgent Tasks</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-4">
-            {urgentTasks.map((task) => (
-              <li key={task.id} className="flex items-center space-x-3">
-                <AlertCircle className="h-5 w-5 text-red-500" />
-                <div>
-                  <p className="font-medium">{task.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Due: {new Date(task.dueDate).toLocaleDateString()}
-                  </p>
-                </div>
-                <span className="ml-auto text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
-                  {task.priority}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {urgentTasks.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">No urgent tasks</p>
+          ) : (
+            <ul className="space-y-4">
+              {urgentTasks.map((task) => (
+                <li key={task.id} className="flex items-center space-x-3">
+                  <AlertCircle className="h-5 w-5 text-red-500" />
+                  <div>
+                    <p className="font-medium">{task.title}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Due: {new Date(task.dueDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <span className="ml-auto text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
+                    {task.priority}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
 
@@ -123,22 +152,26 @@ export const Dashboard: React.FC = () => {
           <CardTitle>Unpaid Invoices</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-4">
-            {unpaidInvoices.map((invoice) => (
-              <li key={invoice.id} className="flex items-center space-x-3">
-                <Clock className="h-5 w-5 text-purple-500" />
-                <div>
-                  <p className="font-medium">Invoice #{invoice.id}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Due: {new Date(invoice.dueDate).toLocaleDateString()}
-                  </p>
-                </div>
-                <span className="ml-auto text-sm font-medium">
-                  ${invoice.amount.toFixed(2)}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {unpaidInvoices.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">No unpaid invoices</p>
+          ) : (
+            <ul className="space-y-4">
+              {unpaidInvoices.map((invoice) => (
+                <li key={invoice.id} className="flex items-center space-x-3">
+                  <Clock className="h-5 w-5 text-purple-500" />
+                  <div>
+                    <p className="font-medium">Invoice #{invoice.id}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Due: {new Date(invoice.dueDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <span className="ml-auto text-sm font-medium">
+                    ${invoice.amount.toFixed(2)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
     </div>
