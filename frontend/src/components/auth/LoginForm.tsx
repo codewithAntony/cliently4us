@@ -11,8 +11,8 @@ interface LoginFormProps {
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
-    const [email, setEmail] = useState('demo@clienttrack.com')
-    const [password, setPassword] = useState('password')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [errors, setErrors] = useState<{ email?: String; password?: string }>
     ({})
@@ -51,6 +51,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
       try {
         await login(email, password)
         addToast('success', 'Welcome back!', 'You have successfully signed in.')
+        navigate("/dashboard")
       } catch (error) {
         addToast('error', 'Login failed', error instanceof Error ? error.message : 'Invalid credentials')
       } finally {
@@ -61,9 +62,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   return (
     <div className='w-full max-w-md'> 
       <div className='text-center mb-8'>
-        <div className='w-16 4-16 bg-slate-900 dark:bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4'>
-          <span className='text-white dark:text-slate-900 font-bold text-xl'>CT</span>
-        </div>
+        <div className="w-16 h-16  bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4'">
+            <span className="text-white font-bold text-xl">CS</span>
+            </div>
         <h2 className='text-2xl font-bold text-slate-900 dark:text-slate-100'>Welcome back</h2>
         <p className='text-slate-600 dark:text-slate-400 mt-2'>Sign in to your account to continue</p>
       </div>
@@ -109,14 +110,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
             >
               Sign up
             </button>
-        </p>
-      </div>
-
-      <div className='mt-8 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg'>
-        <p className='text-xs text-slate-600 dark:text-slate-400 text-center'>
-          <strong>Demo credentials:</strong><br />
-          Email: demo@clienttrack.com<br />
-          Password: password
         </p>
       </div>
     </div>

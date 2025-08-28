@@ -68,13 +68,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
     return (
         <div className='w-full max-w-md'>
             <div className='text-center mb-8'>
-                <div className='w-16 h-16 bg-slate-900 dark:bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4'>
-                    <span className='text-white dark:text-slate-900 font-bold text-xl'>CT</span>
-                </div>
+                <div className="w-16 h-16  bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4'">
+            <span className="text-white font-bold text-xl">CS</span>
+            </div>
                 <h2 className='text-2xl font-bold text-slate-900 dark:text-slate-100'>
                     Create your account
                 </h2>
-                <p className='text-slate-600 dark:text-slate-400 mt-2'>Join ClientTrack Pro to manage your clients</p>
+                <p className='text-slate-600 dark:text-slate-400 mt-2'>Join ClientSight to manage your clients</p>
             </div>
 
             <form onSubmit={handleSubmit} className='space-y-4'>
