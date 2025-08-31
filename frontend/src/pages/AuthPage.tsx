@@ -7,7 +7,7 @@ export const AuthPage: React.FC = () => {
 
 
     return (
-        <div className='min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4'>
+        <div className='min-h-screen flex items-center justify-center px-4 bg-[#152141]'>
             <div className='w-full max-w-md'>
                 {isLogin ? (
                     <LoginForm onSwitchToRegister={() => setIsLogin(false)} />
