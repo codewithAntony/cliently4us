@@ -109,7 +109,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
         <p className='text-sm text-white dark:text-slate-400'>Don't have an account?{' '}
           <button
             onClick={onSwitchToRegister}
-            className='font-medium text-white dark:text-slate-100 hover:underline'
+            className='font-medium text-white dark:text-slate-100 underline'
             >
               Sign up
             </button>

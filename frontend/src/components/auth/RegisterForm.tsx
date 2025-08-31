@@ -66,15 +66,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
 
 
     return (
-        <div className='w-full max-w-md'>
+        <div className='min-h-screen flex items-center justify-center bg-[#152141] px-4'>
+            <div className='w-full max-w-md rounded-2xl shadow-lg p-8 bg-[#1e2a4a]'>
             <div className='text-center mb-8'>
                 <div className="w-16 h-16  bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4'">
             <span className="text-white font-bold text-xl">CS</span>
             </div>
-                <h2 className='text-2xl font-bold text-slate-900 dark:text-slate-100'>
+                <h2 className='text-2xl font-bold text-white'>
                     Create your account
                 </h2>
-                <p className='text-slate-600 dark:text-slate-400 mt-2'>Join ClientSight to manage your clients</p>
+                <p className='text-white mt-2'>Join ClientSight to manage your clients</p>
             </div>
 
             <form onSubmit={handleSubmit} className='space-y-4'>
@@ -92,6 +93,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                     label='Email'
                     onChange={e => setEmail(e.target.value)}
                     placeholder='Enter your email'
+                    autoComplete='off'
                 />
 
                 <div className='relative'>
@@ -101,6 +103,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
                         label='Password'
                         onChange={e => setPassword(e.target.value)}
                         placeholder='Create a password'
+                        autoComplete='new-password'
                     />
                     <button
                         type='button'
@@ -125,16 +128,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
             </form>
 
             <div className='mt-6 text-center'>
-                <p className='text-sm text-slate-600 dark:text-slate-400'>
+                <p className='text-sm text-white'>
                     Already have an account?{' '}
                     <button 
                         onClick={onSwitchToLogin}
-                        className='font-medium text-slate-900 dark:text-slate-100 hover:underline'
+                        className='font-medium text-white underline'
                     >
                         Sign in
                     </button>
                 </p>
             </div>
         </div>
+        </div>
+        
     )
 }
