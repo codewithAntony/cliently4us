@@ -45,10 +45,10 @@ interface Summary {
 
 export const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState<Summary>({ activeClient: 0, unpaidInvoices: 0, openTasks: 0 })
-  const [recentClients, setRecentClients] = useState<Client[]>([]) // Initialize as empty array
-  const [urgentTasks, setUrgentTasks] = useState<Task[]>([]) // Initialize as empty array
-  const [unpaidInvoices, setUnpaidInvoices] = useState<Invoice[]>([]) // Initialize as empty array
-  const [loading, setLoading] = useState(true) // Add loading state
+  const [recentClients, setRecentClients] = useState<Client[]>([]) 
+  const [urgentTasks, setUrgentTasks] = useState<Task[]>([]) 
+  const [unpaidInvoices, setUnpaidInvoices] = useState<Invoice[]>([]) 
+  const [loading, setLoading] = useState(true) 
   const { user } = useAuth()
 
   useEffect(() => {
