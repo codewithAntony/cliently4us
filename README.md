@@ -18,7 +18,7 @@
 
 ---
 
-## 🛠️ Tech Stack  
+## Tech Stack  
 
 - **Frontend:** React, TypeScript, TailwindCSS 
 - **Backend:**  Golang
@@ -27,11 +27,11 @@
 
 ---
 
-## 📸 Screenshots  
+## Screenshots  
 
 ### Homepage
 
-![Homepage](./frontend/public/assets/clientsightdashboard.png)
+![Homepage](./frontend/public/assets/clientsighthomepage.png)
 
 ### SignupPage
 
@@ -39,7 +39,7 @@
 
 ### Dashboard
 
-![Signuppage](./frontend/public/assets/clientsightdashboard.png)
+![Dashboard](./frontend/public/assets/clientsightdashboard.png)
 
 
 ---
